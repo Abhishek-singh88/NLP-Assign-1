@@ -58,5 +58,5 @@ NLP Assign-1/
 
 
 ### screenshot
-
+![OCR App Screenshot](ss2.png)
 ![OCR App Screenshot](ss.png)
