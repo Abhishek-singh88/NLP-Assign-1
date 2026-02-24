@@ -2,15 +2,14 @@ const express = require("express");
 const multer = require("multer");
 const Tesseract = require("tesseract.js");
 const cors = require("cors");
-
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest:"uploads/"});
 
-app.post("/ocr", upload.single("image"), async (req, res) => {
+app.post("/ocr",upload.single("image"),async(req,res) =>{
   try {
     const result = await Tesseract.recognize(
       req.file.path,

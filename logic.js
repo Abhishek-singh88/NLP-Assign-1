@@ -1,5 +1,4 @@
 let currentStats = {};
-
 async function uploadImage() {
   const file = document.getElementById("imageInput").files[0];
   const formData = new FormData();
@@ -12,7 +11,7 @@ const res = await fetch("http://localhost:3000/ocr", {
 
 
   const data = await res.json();
-  document.getElementById("output").value = data.text;
+  document.getElementById("output").value =data.text;
   showStats(data.text);
 }
 
@@ -20,7 +19,7 @@ function showStats(text) {
   const words = text.trim().split(/\s+/).length;
   const sentences = countSentences(text);
   const characters = text.length;
-  const avgWordLength = (characters / words).toFixed(2);
+  const avgWordLength = (characters/words).toFixed(2);
 
     currentStats = {
     words,
