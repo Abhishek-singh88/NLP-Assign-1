@@ -1,0 +1,59 @@
+body {
+  font-family: "Times New Roman", serif;
+  max-width: 980px;
+  margin: 30px auto;
+  line-height: 1.4;
+}
+
+h2 {
+  margin-bottom: 14px;
+}
+
+input[type="file"],
+button {
+  margin-right: 8px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  width: 100%;
+  margin: 12px 0;
+  padding: 8px;
+}
+
+#stats,
+#spellSummary {
+  margin: 10px 0;
+}
+
+.spell-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.spell-table th,
+.spell-table td {
+  border: 1px solid #999;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.spell-table th {
+  background-color: #f1f1f1;
+}
+
+.wrong-part {
+  color: #c10000;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.complexity {
+  margin-top: 14px;
+  padding: 8px 10px;
+  border-left: 4px solid #444;
+  background-color: #fafafa;
+}
