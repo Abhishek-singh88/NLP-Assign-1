@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ocr</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -15,7 +17,11 @@
 
 <div id="stats"></div>
 
+<button onclick="checkSpelling()">check spelling</button>
 <button onclick="downloadDoc()">download file</button>
+
+<div id="spellSummary"></div>
+<div id="spellResults"></div>
 
 <script src="logic.js"></script>
 </body>
