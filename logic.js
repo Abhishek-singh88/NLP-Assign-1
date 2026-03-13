@@ -2,7 +2,6 @@ let currentStats = {};
 let normalizedHindiDictionary = [];
 let hindiDictionarySet = new Set();
 let dictionaryLoaded = false;
-const FALLBACK_HINDI_WORDS = ["यह", "है", "और", "में", "का", "की", "के", "से", "पर", "को"];
 
 async function loadHindiDictionary() {
   if (dictionaryLoaded) {
@@ -16,18 +15,22 @@ async function loadHindiDictionary() {
     }
 
     const raw = await res.text();
-    const words = raw
-      .split(/\r?\n/)
-      .map((w) => normalizeWord(w))
-      .filter((w) => w && /[\u0900-\u097F]/.test(w));
+    const lines = raw.split(/\r?\n/);
+    const wordSet = new Set();
 
-    const uniqueWords = Array.from(new Set(words));
-    if (!uniqueWords.length) {
+    for (let i = 0; i < lines.length; i += 1) {
+      const w = normalizeWord(lines[i]);
+      if (w && /[\u0900-\u097F]/.test(w)) {
+        wordSet.add(w);
+      }
+    }
+
+    if (!wordSet.size) {
       throw new Error("dictionary file is empty");
     }
 
-    normalizedHindiDictionary = uniqueWords;
-    hindiDictionarySet = new Set(uniqueWords);
+    normalizedHindiDictionary = Array.from(wordSet);
+    hindiDictionarySet = new Set(normalizedHindiDictionary);
     dictionaryLoaded = true;
   } catch (err) {
     normalizedHindiDictionary = FALLBACK_HINDI_WORDS.map((w) => normalizeWord(w));
@@ -135,9 +138,19 @@ async function checkSpelling() {
     return;
   }
 
-  const rows = tokens.map((token) => analyzeToken(token));
-  renderSpellResults(rows);
-  renderComplexity();
+  const analyzed = [];
+  for (let i = 0; i < tokens.length; i += 1) {
+    analyzed.push(analyzeToken(tokens[i]));
+  }
+
+  const rows = [];
+  for (let i = 0; i < analyzed.length; i += 1) {
+    if (analyzed[i].benchmark !== "Correct") {
+      rows.push(analyzed[i]);
+    }
+  }
+
+  renderSpellResults(rows, analyzed.length);
 }
 
 function extractTokens(text) {
@@ -206,7 +219,7 @@ function levenshteinDistance(a, b) {
   return dp[a.length][b.length];
 }
 
-function jaroDistance(a, b) {
+function zaroDistance(a, b) {
   if (a === b) {
     return 1;
   }
@@ -284,7 +297,7 @@ function analyzeToken(token) {
       hamming: 0,
       lcs: token.length,
       levenshtein: 0,
-      jaro: 1,
+      zaro: 1,
       benchmark: "Correct",
       displayWord: token
     };
@@ -296,21 +309,21 @@ function analyzeToken(token) {
     const hamming = hammingDistance(word, ref);
     const lcs = lcsLength(word, ref);
     const levenshtein = levenshteinDistance(word, ref);
-    const jaro = jaroDistance(word, ref);
+    const zaro = zaroDistance(word, ref);
 
     if (
       !best ||
       levenshtein < best.levenshtein ||
-      (levenshtein === best.levenshtein && jaro > best.jaro) ||
-      (levenshtein === best.levenshtein && jaro === best.jaro && lcs > best.lcs)
+      (levenshtein === best.levenshtein && zaro > best.zaro) ||
+      (levenshtein === best.levenshtein && zaro === best.zaro && lcs > best.lcs)
     ) {
-      best = { reference: candidate, hamming, lcs, levenshtein, jaro };
+      best = { reference: candidate, hamming, lcs, levenshtein, zaro };
     }
   }
 
   const backoff = partialBackoff(word, hindiDictionarySet);
   const benchmark =
-    backoff ? "Partially Correct" : best && (best.levenshtein <= 2 || best.jaro >= 0.88) ? "Wrong (Near)" : "Wrong";
+    backoff ? "Partially Correct" : best && (best.levenshtein <= 2 || best.zaro >= 0.88) ? "Wrong (Near)" : "Wrong";
 
   return {
     token,
@@ -318,7 +331,7 @@ function analyzeToken(token) {
     hamming: best ? best.hamming : "-",
     lcs: best ? best.lcs : "-",
     levenshtein: best ? best.levenshtein : "-",
-    jaro: best ? best.jaro : "-",
+    zaro: best ? best.zaro : "-",
     benchmark,
     displayWord: backoff
       ? `${token.slice(0, backoff.prefix.length)}<span class="wrong-part">${token.slice(backoff.prefix.length)}</span>`
@@ -326,19 +339,26 @@ function analyzeToken(token) {
   };
 }
 
-function renderSpellResults(rows) {
-  const summary = {
-    correct: rows.filter((r) => r.benchmark === "Correct").length,
-    partial: rows.filter((r) => r.benchmark === "Partially Correct").length,
-    wrong: rows.filter((r) => r.benchmark.startsWith("Wrong")).length
-  };
+function renderSpellResults(rows, totalTokens) {
+  const total = typeof totalTokens === "number" ? totalTokens : rows.length;
+  let partial = 0;
+  let wrong = 0;
+  for (let i = 0; i < rows.length; i += 1) {
+    if (rows[i].benchmark === "Partially Correct") {
+      partial += 1;
+    } else if (rows[i].benchmark && rows[i].benchmark.startsWith("Wrong")) {
+      wrong += 1;
+    }
+  }
+  const correct = Math.max(0, total - rows.length);
 
   document.getElementById("spellSummary").innerHTML = `
     <h3>Spell Check Summary</h3>
-    <p>Total Tokens: ${rows.length} | Correct: ${summary.correct} | Partially Correct: ${summary.partial} | Wrong: ${summary.wrong}</p>
+    <p>Total Tokens: ${total} | Correct: ${correct} | Partially Correct: ${partial} | Wrong: ${wrong}</p>
   `;
 
   const header = `
+    <p><strong>Table:</strong> Wrong and Partially Correct tokens only.</p>
     <table class="spell-table">
       <thead>
         <tr>
@@ -347,42 +367,29 @@ function renderSpellResults(rows) {
           <th>Hamming</th>
           <th>LCS</th>
           <th>Levenshtein</th>
-          <th>Zaro (Jaro)</th>
+          <th>zaro</th>
           <th>Benchmark</th>
         </tr>
       </thead>
       <tbody>
   `;
 
-  const body = rows.map((r) => `
-    <tr>
-      <td>${r.displayWord}</td>
-      <td>${r.reference}</td>
-      <td>${r.hamming}</td>
-      <td>${r.lcs}</td>
-      <td>${r.levenshtein}</td>
-      <td>${typeof r.jaro === "number" ? r.jaro.toFixed(3) : r.jaro}</td>
-      <td>${r.benchmark}</td>
-    </tr>
-  `).join("");
+  let body = "";
+  for (let i = 0; i < rows.length; i += 1) {
+    const r = rows[i];
+    body += `
+      <tr>
+        <td>${r.displayWord}</td>
+        <td>${r.reference}</td>
+        <td>${r.hamming}</td>
+        <td>${r.lcs}</td>
+        <td>${r.levenshtein}</td>
+        <td>${typeof r.zaro === "number" ? r.zaro.toFixed(3) : r.zaro}</td>
+        <td>${r.benchmark}</td>
+      </tr>
+    `;
+  }
 
   const footer = "</tbody></table>";
   document.getElementById("spellResults").innerHTML = header + body + footer;
-}
-
-function renderComplexity() {
-  document.getElementById("spellResults").insertAdjacentHTML(
-    "beforeend",
-    `
-      <div class="complexity">
-        <h3>Complexity (Designed Approach)</h3>
-        <p>
-          Let N = number of tokens, D = dictionary size, M/L = token/reference lengths.
-          Per token we compare with up to D candidates:
-          Hamming O(max(M, L)), LCS O(M*L), Levenshtein O(M*L), Jaro O(M+L).
-          Overall dominant complexity is O(N * D * M * L).
-        </p>
-      </div>
-    `
-  );
 }

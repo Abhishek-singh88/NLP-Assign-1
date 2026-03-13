@@ -50,10 +50,3 @@ textarea {
   font-weight: 700;
   text-decoration: underline;
 }
-
-.complexity {
-  margin-top: 14px;
-  padding: 8px 10px;
-  border-left: 4px solid #444;
-  background-color: #fafafa;
-}
