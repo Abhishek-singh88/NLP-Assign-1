@@ -1,0 +1,41 @@
+[
+  {
+    "noise": "spelling",
+    "clean_avg_tokens_per_word": 2.0802,
+    "noisy_avg_tokens_per_word": 3.8066,
+    "token_length_increase": 1.7264,
+    "token_drift": 0.9488,
+    "vocab_inflation": 0.6321986178653698,
+    "ppl_clean": 2065.6211971693456,
+    "ppl_noisy": 7233.648957532611,
+    "ppl_delta": 5168.027760363266,
+    "clean_vocab_size": 3907,
+    "noisy_vocab_size": 2470
+  },
+  {
+    "noise": "ocr",
+    "clean_avg_tokens_per_word": 2.0802,
+    "noisy_avg_tokens_per_word": 2.9312,
+    "token_length_increase": 0.851,
+    "token_drift": 0.4908,
+    "vocab_inflation": 0.7901202969029947,
+    "ppl_clean": 2065.6211971693456,
+    "ppl_noisy": 3072.8154841133323,
+    "ppl_delta": 1007.1942869439868,
+    "clean_vocab_size": 3907,
+    "noisy_vocab_size": 3087
+  },
+  {
+    "noise": "translit",
+    "clean_avg_tokens_per_word": 2.0802,
+    "noisy_avg_tokens_per_word": 5.165,
+    "token_length_increase": 3.0848,
+    "token_drift": 0.8374,
+    "vocab_inflation": 0.5556693114921935,
+    "ppl_clean": 2065.6211971693456,
+    "ppl_noisy": 3001295.4149969765,
+    "ppl_delta": 2999229.7937998073,
+    "clean_vocab_size": 3907,
+    "noisy_vocab_size": 2171
+  }
+]
