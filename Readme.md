@@ -44,6 +44,30 @@ node scripts/bpe_plot_svg.js
 
 ---
 
+## Byte-level BPE (Part 2)
+
+**Run:**
+
+```bash
+node scripts/byte_bpe_train.js corpus/hindi_words.txt outputs/byte_bpe 5000 5000
+node scripts/byte_bpe_eval.js corpus/hindi_words.txt outputs/byte_bpe 32000 5000
+```
+
+**Outputs:**
+- `outputs/byte_bpe/byte_bpe_<vocab>_vocab.txt`
+- `outputs/byte_bpe/byte_bpe_<vocab>_merges.txt`
+- `outputs/byte_bpe/byte_bpe_<vocab>_top_tokens.txt`
+- `outputs/byte_bpe/byte_bpe_<vocab>_top_merges.txt`
+- `outputs/byte_bpe/byte_bpe_<vocab>_examples.txt`
+- `outputs/byte_bpe/metrics.json`
+- `outputs/byte_bpe/metrics.csv`
+- `outputs/byte_bpe/robustness/robustness_metrics.json`
+- `outputs/byte_bpe/robustness/robustness_metrics.csv`
+- `outputs/byte_bpe/robustness/*_examples.txt`
+- `outputs/byte_bpe/report.md`
+
+---
+
 ## Tech Stack
 
 ### Frontend
