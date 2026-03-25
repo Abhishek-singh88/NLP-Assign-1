@@ -112,7 +112,7 @@ Average Word Length: ${currentStats.avgWordLength}
 
 function countSentences(text) {
   let s = text
-    .split(/[।.!?]/)
+    .split(/[।!?]/)
     .filter(t => t.trim().length > 0);
   if (s.length <= 1) {
     s = text
@@ -159,7 +159,16 @@ function extractTokens(text) {
 }
 
 function normalizeWord(word) {
-  return (word || "").toLowerCase().trim();
+  if (!word) return "";
+  let w = String(word).trim().toLowerCase();
+  // If corpus entries include metadata like "हमारा/IGCB", keep only the Hindi part.
+  const slashIdx = w.indexOf("/");
+  if (slashIdx !== -1) {
+    w = w.slice(0, slashIdx);
+  }
+  // Remove any non-Devanagari chars that may linger.
+  w = w.replace(/[^\u0900-\u097F]+/g, "");
+  return w;
 }
 
 function getCandidates(word) {

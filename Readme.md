@@ -15,6 +15,32 @@ This project is a simple **OCR (Optical Character Recognition) web application**
   - Number of characters
   - Average word length
 - Download extracted text along with statistics as a **DOCX file**
+- Spell checking with edit distances (Hamming, LCS, Levenshtein, Zaro/Jaro)
+- Hindi dictionary support via `corpus/hindi_words.txt`
+
+---
+
+## BPE (Part 1)
+
+This project includes a simple BPE trainer for the Hindi corpus.
+
+**Run:**
+
+```bash
+node scripts/bpe_train.js corpus/hindi_words.txt outputs/bpe 5000 5000
+node scripts/bpe_plot_svg.js
+```
+
+**Outputs:**
+- `outputs/bpe/bpe_<vocab>_vocab.txt`
+- `outputs/bpe/bpe_<vocab>_merges.txt`
+- `outputs/bpe/bpe_<vocab>_top_tokens.txt`
+- `outputs/bpe/bpe_<vocab>_top_merges.txt`
+- `outputs/bpe/bpe_<vocab>_examples.txt`
+- `outputs/bpe/metrics.json`
+- `outputs/bpe/metrics.csv`
+- `outputs/bpe/plots/*.svg`
+- `outputs/bpe/report.md`
 
 ---
 
