@@ -1,0 +1,2 @@
+vocab_size,words,greedy_time_ms,trie_build_ms,trie_time_ms,greedy_tokens_per_word,trie_tokens_per_word,mem_vocab_est_bytes,mem_trie_est_bytes
+32000,5000,8.494500998407602,61.286388002336025,20.2072799988091,2.6024,2.6024,618238,2464526

@@ -1,0 +1,11 @@
+{
+  "vocab_size": 32000,
+  "words": 5000,
+  "greedy_time_ms": 8.494500998407602,
+  "trie_build_ms": 61.286388002336025,
+  "trie_time_ms": 20.2072799988091,
+  "greedy_tokens_per_word": 2.6024,
+  "trie_tokens_per_word": 2.6024,
+  "mem_vocab_est_bytes": 618238,
+  "mem_trie_est_bytes": 2464526
+}
