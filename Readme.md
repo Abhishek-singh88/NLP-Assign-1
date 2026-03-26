@@ -20,9 +20,38 @@ This project is a simple **OCR (Optical Character Recognition) web application**
 
 ---
 
+## How to Run the OCR App
+
+```bash
+node server.js
+```
+
+Open:
+
+```
+http://localhost:3000/index.html
+```
+
+---
+
+## Corpus Assumptions (All Parts)
+
+- `corpus/hindi_words.txt` is the main Hindi corpus.
+- One word per line is expected.
+- If corpus lines include metadata like `word/TAG`, the spell checker normalizes to just the Hindi word.
+- Many experiments use a smaller subset (e.g., 5,000 words) for speed. This is stated in each report.
+
+---
+
 ## BPE (Part 1)
 
 This project includes a simple BPE trainer for the Hindi corpus.
+
+**What it does:**
+- Trains BPE with vocab sizes: 8K, 16K, 32K, 64K, 128K, 256K.
+- Computes average tokens per word, OOV rate, compression ratio, time, and memory.
+- Saves merges, vocabulary, top tokens/merges, and examples.
+- Generates plots (SVG).
 
 **Run:**
 
@@ -45,6 +74,14 @@ node scripts/bpe_plot_svg.js
 ---
 
 ## Byte-level BPE (Part 2)
+
+**What it does:**
+- Trains byte-level BPE on the Hindi corpus.
+- Evaluates robustness with controlled noise:
+  - spelling mistakes
+  - OCR-like distortions
+  - transliteration errors
+- Reports token drift, token length increase, vocabulary inflation, and perplexity delta (proxy).
 
 **Run:**
 
@@ -70,6 +107,10 @@ node scripts/byte_bpe_eval.js corpus/hindi_words.txt outputs/byte_bpe 32000 5000
 
 ## Fairness & Bias (Part 3)
 
+**What it does:**
+- Builds a synthetic fairness dataset with group variations (noisy, code-mixed, romanized, long/short).
+- Reports group-wise tokenization metrics (avg tokens/word, OOV rate).
+
 **Run:**
 
 ```bash
@@ -87,6 +128,11 @@ node scripts/fairness_eval.js outputs/fairness/fairness_dataset.tsv outputs/byte
 
 ## Code-mixed Tokenizer (Part 4)
 
+**What it does:**
+- Creates Hindi-English code-mixed inputs.
+- Compares baseline byte-BPE vs script-aware byte-BPE.
+- Reports fragmentation rate and token efficiency.
+
 **Run:**
 
 ```bash
@@ -99,6 +145,51 @@ node scripts/codemix_eval.js outputs/codemix/codemix_dataset.tsv outputs/byte_bp
 - `outputs/codemix/codemix_metrics.csv`
 - `outputs/codemix/codemix_metrics.json`
 - `outputs/codemix/report.md`
+
+---
+
+## Edge Tokenizer (Part 5)
+
+**What it does:**
+- Compares greedy longest-match vs trie-based tokenization.
+- Measures throughput, memory estimates, and tokens/word.
+
+**Run:**
+
+```bash
+node scripts/edge_tokenizer.js outputs/bpe/bpe_32000_vocab.txt corpus/hindi_words.txt 5000
+```
+
+**Outputs:**
+- `outputs/edge/edge_metrics.json`
+- `outputs/edge/edge_metrics.csv`
+- `outputs/edge/report.md`
+
+---
+
+## Explainable Tokenizer (Part 6)
+
+**What it does:**
+- Provides a simple dashboard for visualizing token boundaries.
+- Side-by-side baseline byte-BPE and script-aware tokenization.
+- Includes a saliency proxy and case studies.
+
+**Run:**
+
+```bash
+node scripts/explainable_tokens.js outputs/byte_bpe/byte_bpe_32000_merges.txt outputs/explainable/explainer_data.json
+```
+
+**Open:**
+
+```
+http://localhost:3000/outputs/explainable/index.html
+```
+
+**Outputs:**
+- `outputs/explainable/index.html`
+- `outputs/explainable/explainer_data.json`
+- `outputs/explainable/report.md`
 
 ---
 
@@ -123,14 +214,23 @@ node scripts/codemix_eval.js outputs/codemix/codemix_dataset.tsv outputs/byte_bp
 ```bash
 NLP Assign-1/
 │
-├── public/
-│ ├── index.html
-│ ├── script.js
-│ └── style.css
+├── outputs/
+│ ├── bpe/
+│ ├── byte_bpe/
+│ ├── fairness/
+│ ├── codemix/
+│ ├── edge/
+│ └── explainable/
 │
 ├── uploads/
 │
+├── corpus/
+│ └── hindi_words.txt
+│
 ├── server.js
+├── logic.js
+├── index.html
+├── style.css
 ├── package.json
 └── README.md
 ```
