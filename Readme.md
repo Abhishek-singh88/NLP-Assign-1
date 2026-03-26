@@ -68,6 +68,23 @@ node scripts/byte_bpe_eval.js corpus/hindi_words.txt outputs/byte_bpe 32000 5000
 
 ---
 
+## Fairness & Bias (Part 3)
+
+**Run:**
+
+```bash
+node scripts/fairness_dataset.js corpus/hindi_words.txt outputs/fairness 5000
+node scripts/fairness_eval.js outputs/fairness/fairness_dataset.tsv outputs/byte_bpe 32000
+```
+
+**Outputs:**
+- `outputs/fairness/fairness_dataset.tsv`
+- `outputs/fairness/fairness_metrics.csv`
+- `outputs/fairness/fairness_metrics.json`
+- `outputs/fairness/report.md`
+
+---
+
 ## Tech Stack
 
 ### Frontend

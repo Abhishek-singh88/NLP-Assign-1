@@ -1,0 +1,38 @@
+[
+  {
+    "group": "hi",
+    "count": 834,
+    "avg_tokens_per_word": 2.1115107913669067,
+    "oov_rate": 0
+  },
+  {
+    "group": "hi_noisy",
+    "count": 834,
+    "avg_tokens_per_word": 3.8657074340527577,
+    "oov_rate": 0
+  },
+  {
+    "group": "hi_code_mixed",
+    "count": 833,
+    "avg_tokens_per_word": 8.911164465786314,
+    "oov_rate": 0
+  },
+  {
+    "group": "hi_romanized",
+    "count": 833,
+    "avg_tokens_per_word": 9.07563025210084,
+    "oov_rate": 0
+  },
+  {
+    "group": "hi_long",
+    "count": 833,
+    "avg_tokens_per_word": 4.857142857142857,
+    "oov_rate": 0
+  },
+  {
+    "group": "hi_short",
+    "count": 833,
+    "avg_tokens_per_word": 1.6734693877551021,
+    "oov_rate": 0
+  }
+]
