@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explainable Tokenizer</title>
+</head>
+<body>
+  <h2>Explainable Tokenizer (Part 6)</h2>
+
+  <textarea id="input" rows="6" style="width:100%;"></textarea>
+  <button id="analyze">Analyze</button>
+
+  <h3>Baseline (Byte BPE)</h3>
+  <div id="baseline"></div>
+
+  <h3>Script-aware BPE</h3>
+  <div id="script"></div>
+
+  <h3>Case Studies</h3>
+  <div id="cases"></div>
+
+  <script>
+    async function loadData() {
+      const res = await fetch('./explainer_data.json');
+      return res.json();
+    }
+
+    function renderTokens(container, tokens, saliency) {
+      container.innerHTML = '';
+      for (let i = 0; i < tokens.length; i++) {
+        const span = document.createElement('span');
+        span.textContent = tokens[i] + ' ';
+        const alpha = 0.15 + (saliency[i] || 0) * 0.6;
+        span.style.background = 'rgba(255, 200, 0, ' + alpha + ')';
+        span.style.padding = '2px 4px';
+        span.style.margin = '2px';
+        span.style.display = 'inline-block';
+        container.appendChild(span);
+      }
+    }
+
+    function simpleSaliency(tokens) {
+      let max = 1;
+      for (let i = 0; i < tokens.length; i++) {
+        if (tokens[i].length > max) max = tokens[i].length;
+      }
+      return tokens.map(function (t) { return t.length / max; });
+    }
+
+    function baselineTokens(text) {
+      return text.split(/\s+/).filter(Boolean);
+    }
+
+    async function main() {
+      const data = await loadData();
+      const input = document.getElementById('input');
+      const baseline = document.getElementById('baseline');
+      const script = document.getElementById('script');
+      const cases = document.getElementById('cases');
+
+      if (data.samples && data.samples.length) {
+        input.value = data.samples[0].text;
+        const baseToks = data.samples[0].baseline_tokens_display || data.samples[0].baseline_tokens;
+        const saToks = data.samples[0].script_aware_tokens_display || data.samples[0].script_aware_tokens;
+        renderTokens(baseline, baseToks, data.samples[0].baseline_saliency);
+        renderTokens(script, saToks, data.samples[0].script_aware_saliency);
+      }
+
+      cases.innerHTML = '';
+      data.samples.forEach(function (s) {
+        const block = document.createElement('div');
+        block.innerHTML = '<p><strong>Input:</strong> ' + s.text + '</p>';
+        const baseDiv = document.createElement('div');
+        const saDiv = document.createElement('div');
+        const b = s.baseline_tokens_display || s.baseline_tokens;
+        const sa = s.script_aware_tokens_display || s.script_aware_tokens;
+        renderTokens(baseDiv, b, s.baseline_saliency);
+        renderTokens(saDiv, sa, s.script_aware_saliency);
+        block.appendChild(baseDiv);
+        block.appendChild(saDiv);
+        block.style.marginBottom = '12px';
+        cases.appendChild(block);
+      });
+
+      document.getElementById('analyze').addEventListener('click', function () {
+        const text = input.value || '';
+        const toks = baselineTokens(text);
+        const sal = simpleSaliency(toks);
+        renderTokens(baseline, toks, sal);
+        renderTokens(script, toks, sal);
+      });
+    }
+
+    main();
+  </script>
+</body>
+</html>
