@@ -85,6 +85,23 @@ node scripts/fairness_eval.js outputs/fairness/fairness_dataset.tsv outputs/byte
 
 ---
 
+## Code-mixed Tokenizer (Part 4)
+
+**Run:**
+
+```bash
+node scripts/codemix_dataset.js corpus/hindi_words.txt outputs/codemix 5000
+node scripts/codemix_eval.js outputs/codemix/codemix_dataset.tsv outputs/byte_bpe 32000
+```
+
+**Outputs:**
+- `outputs/codemix/codemix_dataset.tsv`
+- `outputs/codemix/codemix_metrics.csv`
+- `outputs/codemix/codemix_metrics.json`
+- `outputs/codemix/report.md`
+
+---
+
 ## Tech Stack
 
 ### Frontend

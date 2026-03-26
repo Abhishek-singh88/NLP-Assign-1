@@ -1,0 +1,26 @@
+[
+  {
+    "group": "hi_en",
+    "count": 1667,
+    "avg_tokens_base": 9.50749850029994,
+    "avg_tokens_script_aware": 8.43131373725255,
+    "frag_rate_base": 0.0677396986554033,
+    "frag_rate_script_aware": 0.059700420009966906
+  },
+  {
+    "group": "en_hi",
+    "count": 1667,
+    "avg_tokens_base": 8.767246550689862,
+    "avg_tokens_script_aware": 8.496100779844031,
+    "frag_rate_base": 0.060920776193536835,
+    "frag_rate_script_aware": 0.06018417410217604
+  },
+  {
+    "group": "mixed_in_word",
+    "count": 1666,
+    "avg_tokens_base": 9.379951980792317,
+    "avg_tokens_script_aware": 9.467587034813926,
+    "frag_rate_base": 0.06740458405712754,
+    "frag_rate_script_aware": 0.06383759433775876
+  }
+]
